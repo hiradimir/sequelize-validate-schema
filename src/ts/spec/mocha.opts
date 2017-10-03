@@ -1,0 +1,5 @@
+-t 10s
+--reporter mocha-multi
+--reporter-options progress=-,xunit=./dist/report/mocha-junit.xml
+--compilers ts:espower-typescript/guess src/ts/**/*.ts
+src/ts/**/*.spec.ts

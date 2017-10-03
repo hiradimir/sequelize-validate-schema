@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  shell:
+    build: .
+    env_file: .env
+    environment:
+      TSC_NONPOLLING_WATCHER: "1"
+    links:
+      - postgresql
+    volumes:
+      - .:/home/user/app/
+
+  postgresql:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+

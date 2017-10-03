@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "removeComments": true,
+    "declaration": false,
+    "outDir": "./dist/js/",
+    "rootDir": "./src/ts/",
+    "pretty": true,
+    "sourceMap": true,
+    "noUnusedLocals": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "inlineSourceMap": false,
+    "jsx": "react"
+  },
+  "include": [
+    "./src/ts/**/*.ts",
+    "./src/ts/**/*.tsx"
+  ],
+  "exclude": [
+    "./dist/**/*"
+  ]
+}
