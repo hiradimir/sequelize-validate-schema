@@ -5,7 +5,7 @@ describe("index", () => {
 
   describe("SequelizeTest", () => {
     it('', () => {
-      assert(Index.validateSchame() === 'hello')
+      assert(Index.validateSchemas instanceof Function)
 
     })
   })

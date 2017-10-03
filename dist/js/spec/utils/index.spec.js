@@ -5,7 +5,7 @@ const assert = require("assert");
 describe("index", () => {
     describe("SequelizeTest", () => {
         it('', () => {
-            assert(Index.index() === 'hello');
+            assert(Index.validateSchemas instanceof Function);
         });
     });
 });
