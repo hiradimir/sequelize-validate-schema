@@ -23,7 +23,7 @@
     "prebuild": "npm run clean",
     "tsc": "tsc",
     "build": "npm run tsc",
-    "prepublish": "npm build",
+    "prepare": "npm run build",
     "test": "export NODE_ENV=test && nyc mocha --opts src/ts/spec/mocha.opts"
   },
   "directories": {
