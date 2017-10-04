@@ -7,13 +7,21 @@ services:
     environment:
       TSC_NONPOLLING_WATCHER: "1"
     links:
-      - postgresql
+      - postgresql-96
+      - mysql-57
     volumes:
       - .:/home/user/app/
 
-  postgresql:
-    image: postgres
+  postgresql-96:
+    image: postgres:9.6
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
 
+  mysql-57:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: lollerskates
+      MYSQL_DATABASE: sequelize_test
+      MYSQL_USER: sequelize_test
+      MYSQL_PASSWORD: sequelize_test

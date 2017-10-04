@@ -55,6 +55,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "lodash": "^4.17.4",
+    "mysql2": "^1.4.2",
     "sequelize": "^4.8.1"
   },
   "devDependencies": {
@@ -67,14 +68,14 @@
     "mocha": "^3.5.3",
     "mocha-multi": "^0.11.0",
     "nyc": "^11.2.1",
+    "pg": "^6",
+    "pg-hstore": "^2.3.2",
     "power-assert": "^1.4.4",
     "remap-istanbul": "^0.9.5",
     "rimraf": "^2.6.2",
-    "ts-node": "^3.3.0",
-    "typescript": "^2.5.2",
     "sequelize-typescript": "^0.4.0",
-    "pg": "^6",
-    "pg-hstore": "^2.3.2"
+    "ts-node": "^3.3.0",
+    "typescript": "^2.5.2"
   },
   "optionalDependencies": {
     "fsevents": "^1.1.2"
