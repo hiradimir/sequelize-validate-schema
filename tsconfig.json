@@ -3,7 +3,7 @@
     "target": "es6",
     "module": "commonjs",
     "removeComments": true,
-    "declaration": false,
+    "declaration": true,
     "outDir": "./dist/js/",
     "rootDir": "./src/ts/",
     "pretty": true,

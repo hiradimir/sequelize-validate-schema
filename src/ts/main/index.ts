@@ -1,4 +1,4 @@
-import {Model, Sequelize} from "sequelize-typescript";
+import * as Sequelize from "sequelize";
 import * as assert from "assert";
 import * as Promise from "bluebird";
 import * as _ from "lodash";
@@ -38,12 +38,12 @@ interface IDescribedAttribute {
  * @param {Boolean|function} [options.logging=console.log] A function that logs sql queries, or false for no logging
  * @return {Promise}
  */
-export const validateSchemas = (options) => {
+export const validateSchemas = (sequelize: any, options?) => {
 
   options = _.clone(options) || {};
-  options = _.defaults(options, this.options.validateSchemas, this.options);
+  options = _.defaults(options, {exclude: ['SequelizeMeta']}, sequelize.options);
 
-  const queryInterface = this.getQueryInterface();
+  const queryInterface = sequelize.getQueryInterface();
 
   // FIXME: necessary to support any dialect
   const dataTypeToDBType = (attr: IModelAttribute) => {
@@ -82,7 +82,7 @@ export const validateSchemas = (options) => {
   };
 
   const checkForeignKey = (queryInterface, tableName, model, options) => {
-    return this.query(queryInterface.QueryGenerator.getForeignKeysQuery(tableName), options)
+    return sequelize.query(queryInterface.QueryGenerator.getForeignKeysQuery(tableName), options)
       .then((foreignKeys: Array<any>) => {
 
         return Promise.each(foreignKeys, (modelAttr:IModelAttribute) => {
@@ -142,7 +142,7 @@ export const validateSchemas = (options) => {
                 return !_.includes(options.exclude, tableName);
               })
               .map(tableName => {
-                return this.model(tableName);
+                return sequelize.model(tableName);
               })
               .map(model => {
                 return checkAttributes(queryInterface, model.options.tableName, model, options)

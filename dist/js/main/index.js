@@ -1,27 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sequelize_typescript_1 = require("sequelize-typescript");
+const Sequelize = require("sequelize");
 const assert = require("assert");
 const Promise = require("bluebird");
 const _ = require("lodash");
-exports.validateSchemas = (options) => {
+exports.validateSchemas = (sequelize, options) => {
     options = _.clone(options) || {};
-    options = _.defaults(options, this.options.validateSchemas, this.options);
-    const queryInterface = this.getQueryInterface();
+    options = _.defaults(options, { exclude: ['SequelizeMeta'] }, sequelize.options);
+    const queryInterface = sequelize.getQueryInterface();
     const dataTypeToDBType = (attr) => {
-        if (attr.type instanceof sequelize_typescript_1.Sequelize.STRING) {
+        if (attr.type instanceof Sequelize.STRING) {
             return `CHARACTER VARYING(${attr.type._length})`;
         }
-        else if (attr.type instanceof sequelize_typescript_1.Sequelize.INTEGER) {
+        else if (attr.type instanceof Sequelize.INTEGER) {
             return 'INTEGER';
         }
-        else if (attr.type instanceof sequelize_typescript_1.Sequelize.DATE) {
+        else if (attr.type instanceof Sequelize.DATE) {
             return 'TIMESTAMP WITH TIME ZONE';
         }
-        else if (attr.type instanceof sequelize_typescript_1.Sequelize.DATEONLY) {
+        else if (attr.type instanceof Sequelize.DATEONLY) {
             return 'DATE';
         }
-        else if (attr.type instanceof sequelize_typescript_1.Sequelize.BIGINT) {
+        else if (attr.type instanceof Sequelize.BIGINT) {
             return 'BIGINT';
         }
         else {
@@ -44,7 +44,7 @@ exports.validateSchemas = (options) => {
         });
     };
     const checkForeignKey = (queryInterface, tableName, model, options) => {
-        return this.query(queryInterface.QueryGenerator.getForeignKeysQuery(tableName), options)
+        return sequelize.query(queryInterface.QueryGenerator.getForeignKeysQuery(tableName), options)
             .then((foreignKeys) => {
             return Promise.each(foreignKeys, (modelAttr) => {
                 if (modelAttr.references) {
@@ -100,7 +100,7 @@ exports.validateSchemas = (options) => {
                 return !_.includes(options.exclude, tableName);
             })
                 .map(tableName => {
-                return this.model(tableName);
+                return sequelize.model(tableName);
             })
                 .map(model => {
                 return checkAttributes(queryInterface, model.options.tableName, model, options)
