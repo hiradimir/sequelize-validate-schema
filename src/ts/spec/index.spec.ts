@@ -93,8 +93,8 @@ describe("index", () => {
 
       it('can check unknown table', function () {
         return Index.validateSchemas(sequelize, {
-            exclude: []
-          })
+          exclude: []
+        })
           .then(() => {
             assert(false);
           })

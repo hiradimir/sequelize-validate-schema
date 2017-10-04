@@ -85,7 +85,7 @@ export const validateSchemas = (sequelize: any, options?) => {
     return sequelize.query(queryInterface.QueryGenerator.getForeignKeysQuery(tableName), options)
       .then((foreignKeys: Array<any>) => {
 
-        return Promise.each(foreignKeys, (modelAttr:IModelAttribute) => {
+        return Promise.each(foreignKeys, (modelAttr: IModelAttribute) => {
           if (modelAttr.references) {
             const fk = _.find(foreignKeys, fk => {
               return fk.from === queryInterface.QueryGenerator.quoteIdentifier(modelAttr.field);
