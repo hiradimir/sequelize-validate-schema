@@ -8,7 +8,7 @@ describe("index", () => {
   describe('validateSchemas', () => {
     let sequelize: any;
     beforeEach(function () {
-      sequelize = new Sequelize('postgres://postgres:postgres@postgresql:5432/postgres', {logging: false});
+      sequelize = new Sequelize(process.env.DATABASE_URL, {logging: false});
       const TestTable = sequelize.define('TestTable', {
         id: {
           type: Sequelize.INTEGER,
