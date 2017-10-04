@@ -1,6 +1,6 @@
 {
   "name": "sequelize-validation-schema",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "check defined sequelize models and db-schema",
   "private": false,
   "engines": {
@@ -23,7 +23,7 @@
     "prebuild": "npm run clean",
     "tsc": "tsc",
     "build": "npm run tsc",
-    "prepublish" : "npm build",
+    "prepublish": "npm build",
     "test": "export NODE_ENV=test && nyc mocha --opts src/ts/spec/mocha.opts"
   },
   "directories": {
