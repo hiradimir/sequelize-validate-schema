@@ -22,6 +22,7 @@ describe("index", () => {
         testDate: Sequelize.DATE,
         testBigint: Sequelize.BIGINT,
         // testForeignKey: Sequelize.INTEGER,
+        unknownForeignKey: Sequelize.INTEGER,
         testIndexString: Sequelize.STRING,
         testCombinedIndexString: Sequelize.STRING,
         testUniqueIndexString: Sequelize.STRING,
@@ -29,7 +30,7 @@ describe("index", () => {
           unique: true,
           type: Sequelize.STRING,
         },
-        testNonIndexString: Sequelize.STRING
+        testNonIndexString: Sequelize.STRING,
       }, {
         tableName: 'TestTable',
         indexes: [
@@ -57,7 +58,10 @@ describe("index", () => {
           autoIncrement: true,
           allowNull: false
         },
-        testString: Sequelize.STRING,
+        stringForeignKey: {
+          type: Sequelize.STRING,
+          unique: true
+        },
       }, {
         tableName: 'ForeignTable',
       });
@@ -156,7 +160,7 @@ describe("index", () => {
             assert(false);
           })
           .catch(error => {
-            assert(_.includes(error.message, '"unknownForeignKey" referenced in foreign key constraint does not exist'));
+            assert(_.includes(error.message, '[unknownForeignKey] must be defined foreign key'));
           });
 
       });

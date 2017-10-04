@@ -84,15 +84,10 @@ export const validateSchemas = (sequelize: any, options?) => {
   const checkForeignKey = (queryInterface, tableName, model, options) => {
     return sequelize.query(queryInterface.QueryGenerator.getForeignKeysQuery(tableName), options)
       .then((foreignKeys: Array<any>) => {
-
-        return Promise.each(foreignKeys, (modelAttr: IModelAttribute) => {
-          if (modelAttr.references) {
-            const fk = _.find(foreignKeys, fk => {
-              return fk.from === queryInterface.QueryGenerator.quoteIdentifier(modelAttr.field);
-            });
-            assert(!_.isUndefined(fk), `${tableName}.${modelAttr.field} defined foreign key.\n${JSON.stringify(foreignKeys, null, 2)}`);
-            assert(fk.to === modelAttr.references.key, `${tableName}.${modelAttr.field} => ${modelAttr.references.key} must be same to foreignKey [${fk.to}].\n${JSON.stringify(fk, null, 2)}`);
-          }
+        return Promise.each(foreignKeys, (fk: any) => {
+          const modelAttr: IModelAttribute = model.attributes[fk.from.split('\"').join('')];
+          assert(!_.isUndefined(modelAttr.references), `${tableName}.[${modelAttr.field}] must be defined foreign key.\n${JSON.stringify(fk, null, 2)}`);
+          assert(fk.to === modelAttr.references.key, `${tableName}.${modelAttr.field} => ${modelAttr.references.key} must be same to foreignKey [${fk.to}].\n${JSON.stringify(fk, null, 2)}`);
         });
       });
   };
