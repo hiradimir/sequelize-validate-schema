@@ -50,3 +50,5 @@ jobs:
 
       - store_artifacts:
           path: dist/report
+
+      - run: bash <(curl -s https://codecov.io/bash) -f dist/report/lcov.info
