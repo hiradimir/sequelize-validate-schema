@@ -25,7 +25,7 @@ exports.validateSchemas = (sequelize, options) => {
             return 'BIGINT';
         }
         else {
-            console.error(`${attr.field}\n${JSON.stringify(attr.type)}`);
+            console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
         }
     };
     const checkAttributes = (queryInterface, tableName, model, options) => {
