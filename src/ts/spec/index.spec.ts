@@ -66,6 +66,12 @@ describe("index", () => {
         tableName: 'ForeignTable',
       });
 
+      const AutoCreateFieldTable = sequelize.define('AutoCreateFieldTable',
+        {}, {
+          timestamps: true,
+          tableName: 'AutoCreateFieldTable'
+        });
+
       TestTable.belongsTo(ForeignTable, {as: 'testForeignKey'});
 
       return sequelize

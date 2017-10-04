@@ -60,7 +60,7 @@ export const validateSchemas = (sequelize: any, options?) => {
     } else if (attr.type instanceof Sequelize.BIGINT) {
       return 'BIGINT';
     } else {
-      console.error(`${attr.field}\n${JSON.stringify(attr.type)}`);
+      console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
     }
   };
 
