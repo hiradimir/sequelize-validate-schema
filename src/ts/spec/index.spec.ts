@@ -7,12 +7,12 @@ describe("index", () => {
 
   [
     process.env.DATABASE_URL_PG,
-    // process.env.DATABASE_URL_MYSQL
+    process.env.DATABASE_URL_MYSQL
   ]
     .forEach((DATABASE_URL) => {
       describe(`DIALECT[${DATABASE_URL}]`, () => {
         let sequelize: any;
-        let queryInterface: Sequelize.QueryInterface;
+        let queryInterface: any;
         beforeEach(function () {
           sequelize = new Sequelize(DATABASE_URL, {logging: false});
           const TestTable = sequelize.define('TestTable', {
@@ -79,7 +79,7 @@ describe("index", () => {
             });
 
           TestTable.belongsTo(ForeignTable, {as: 'testForeignKey'});
-          queryInterface = sequelize.getQueryInterface()
+          queryInterface = sequelize.getQueryInterface();
 
           return queryInterface
             .dropAllTables()
