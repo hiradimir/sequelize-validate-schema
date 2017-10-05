@@ -30,23 +30,13 @@ interface IDescribedAttribute {
   primaryKey: boolean
 }
 
-/**
- * Validate schema of models.
- *
- * @param {Object} [options={}]
- * @param {String[]|function} [options.exclude=[`sequelizeMeta`]] if you want to skip validate table.
- * @param {Boolean|function} [options.logging=console.log] A function that logs sql queries, or false for no logging
- * @return {Promise}
- */
-export const validateSchemas = (sequelize: any, options?) => {
 
-  options = _.clone(options) || {};
-  options = _.defaults(options, {exclude: ['SequelizeMeta']}, sequelize.options);
-
-  const queryInterface = sequelize.getQueryInterface();
-
+const dataTypeToDBTypeDialect: {
+  [index: string]: (attr: IModelAttribute) => string
+} = {
   // FIXME: necessary to support any dialect
-  const dataTypeToDBType = (attr: IModelAttribute) => {
+
+  postgres: (attr: IModelAttribute) => {
 
     // this support only postgres
     if (attr.type instanceof Sequelize.STRING) {
@@ -62,7 +52,44 @@ export const validateSchemas = (sequelize: any, options?) => {
     } else {
       console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
     }
-  };
+  },
+  mysql: (attr: IModelAttribute) => {
+
+    // this support only postgres
+    if (attr.type instanceof Sequelize.STRING) {
+      return `VARCHAR(${attr.type._length})`;
+    } else if (attr.type instanceof Sequelize.INTEGER) {
+      return 'INT(11)';
+    } else if (attr.type instanceof Sequelize.DATE) {
+      return 'DATETIME';
+    } else if (attr.type instanceof <any>Sequelize.DATEONLY) {
+      return 'DATE';
+    } else if (attr.type instanceof Sequelize.BIGINT) {
+      return 'BIGINT(20)';
+    } else {
+      console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
+    }
+  }
+};
+
+
+/**
+ * Validate schema of models.
+ *
+ * @param {Object} [options={}]
+ * @param {String[]|function} [options.exclude=[`sequelizeMeta`]] if you want to skip validate table.
+ * @param {Boolean|function} [options.logging=console.log] A function that logs sql queries, or false for no logging
+ * @return {Promise}
+ */
+export const validateSchemas = (sequelize: any, options?) => {
+
+  options = _.clone(options) || {};
+  options = _.defaults(options, {exclude: ['SequelizeMeta']}, sequelize.options);
+
+  const queryInterface = sequelize.getQueryInterface();
+
+
+  const dataTypeToDBType = dataTypeToDBTypeDialect[sequelize.options.dialect];
 
   const checkAttributes = (queryInterface, tableName, model, options) => {
     return queryInterface.describeTable(tableName, options)
@@ -85,6 +112,10 @@ export const validateSchemas = (sequelize: any, options?) => {
     return sequelize.query(queryInterface.QueryGenerator.getForeignKeysQuery(tableName), options)
       .then((foreignKeys: Array<any>) => {
         return Promise.each(foreignKeys, (fk: any) => {
+          if(sequelize.options.dialect === 'mysql'){
+            // sequelize does not support to get foreignkey info at mysql
+            return;
+          }
           const modelAttr: IModelAttribute = model.attributes[fk.from.split('\"').join('')];
           assert(!_.isUndefined(modelAttr.references), `${tableName}.[${modelAttr.field}] must be defined foreign key.\n${JSON.stringify(fk, null, 2)}`);
           assert(fk.to === modelAttr.references.key, `${tableName}.${modelAttr.field} => ${modelAttr.references.key} must be same to foreignKey [${fk.to}].\n${JSON.stringify(fk, null, 2)}`);
@@ -115,10 +146,13 @@ export const validateSchemas = (sequelize: any, options?) => {
             }
             if (modelIndex) {
               assert(modelIndex.unique === true === index.unique === true, `${tableName}.[${indexFields}] must be same unique value\n${JSON.stringify(index, null, 2)}`);
-            } else if (model.attributes[indexFields[0]].unique) {
+            } else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].unique) {
               assert(index.unique === true, `${tableName}.[${indexFields}] must be defined unique key\n${JSON.stringify(index, null, 2)}`);
+            } else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].references ) {
+              // mysql create index with foreignKey
+              assert(sequelize.options.dialect === 'mysql', `${tableName}.[${indexFields}] is auto created index by mysql.\n${JSON.stringify(index, null, 2)}`);
             } else {
-              assert(false, `${tableName}.[${indexFields}] is not defined index\n${JSON.stringify(index, null, 2)}`);
+              assert(false, `${tableName}.[${indexFields}] is not defined index.${JSON.stringify(index, null, 2)}`);
             }
           }
         });

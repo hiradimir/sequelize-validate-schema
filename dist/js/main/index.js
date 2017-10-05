@@ -4,11 +4,8 @@ const Sequelize = require("sequelize");
 const assert = require("assert");
 const Promise = require("bluebird");
 const _ = require("lodash");
-exports.validateSchemas = (sequelize, options) => {
-    options = _.clone(options) || {};
-    options = _.defaults(options, { exclude: ['SequelizeMeta'] }, sequelize.options);
-    const queryInterface = sequelize.getQueryInterface();
-    const dataTypeToDBType = (attr) => {
+const dataTypeToDBTypeDialect = {
+    postgres: (attr) => {
         if (attr.type instanceof Sequelize.STRING) {
             return `CHARACTER VARYING(${attr.type._length})`;
         }
@@ -27,7 +24,33 @@ exports.validateSchemas = (sequelize, options) => {
         else {
             console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
         }
-    };
+    },
+    mysql: (attr) => {
+        if (attr.type instanceof Sequelize.STRING) {
+            return `VARCHAR(${attr.type._length})`;
+        }
+        else if (attr.type instanceof Sequelize.INTEGER) {
+            return 'INT(11)';
+        }
+        else if (attr.type instanceof Sequelize.DATE) {
+            return 'DATETIME';
+        }
+        else if (attr.type instanceof Sequelize.DATEONLY) {
+            return 'DATE';
+        }
+        else if (attr.type instanceof Sequelize.BIGINT) {
+            return 'BIGINT(20)';
+        }
+        else {
+            console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
+        }
+    }
+};
+exports.validateSchemas = (sequelize, options) => {
+    options = _.clone(options) || {};
+    options = _.defaults(options, { exclude: ['SequelizeMeta'] }, sequelize.options);
+    const queryInterface = sequelize.getQueryInterface();
+    const dataTypeToDBType = dataTypeToDBTypeDialect[sequelize.options.dialect];
     const checkAttributes = (queryInterface, tableName, model, options) => {
         return queryInterface.describeTable(tableName, options)
             .then(attributes => {
@@ -47,6 +70,9 @@ exports.validateSchemas = (sequelize, options) => {
         return sequelize.query(queryInterface.QueryGenerator.getForeignKeysQuery(tableName), options)
             .then((foreignKeys) => {
             return Promise.each(foreignKeys, (fk) => {
+                if (sequelize.options.dialect === 'mysql') {
+                    return;
+                }
                 const modelAttr = model.attributes[fk.from.split('\"').join('')];
                 assert(!_.isUndefined(modelAttr.references), `${tableName}.[${modelAttr.field}] must be defined foreign key.\n${JSON.stringify(fk, null, 2)}`);
                 assert(fk.to === modelAttr.references.key, `${tableName}.${modelAttr.field} => ${modelAttr.references.key} must be same to foreignKey [${fk.to}].\n${JSON.stringify(fk, null, 2)}`);
@@ -76,11 +102,14 @@ exports.validateSchemas = (sequelize, options) => {
                     if (modelIndex) {
                         assert(modelIndex.unique === true === index.unique === true, `${tableName}.[${indexFields}] must be same unique value\n${JSON.stringify(index, null, 2)}`);
                     }
-                    else if (model.attributes[indexFields[0]].unique) {
+                    else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].unique) {
                         assert(index.unique === true, `${tableName}.[${indexFields}] must be defined unique key\n${JSON.stringify(index, null, 2)}`);
                     }
+                    else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].references) {
+                        assert(sequelize.options.dialect === 'mysql', `${tableName}.[${indexFields}] is auto created index by mysql.\n${JSON.stringify(index, null, 2)}`);
+                    }
                     else {
-                        assert(false, `${tableName}.[${indexFields}] is not defined index\n${JSON.stringify(index, null, 2)}`);
+                        assert(false, `${tableName}.[${indexFields}] is not defined index.${JSON.stringify(index, null, 2)}`);
                     }
                 }
             });
