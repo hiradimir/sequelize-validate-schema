@@ -102,11 +102,14 @@ exports.validateSchemas = (sequelize, options) => {
                     if (modelIndex) {
                         assert(modelIndex.unique === true === index.unique === true, `${tableName}.[${indexFields}] must be same unique value\n${JSON.stringify(index, null, 2)}`);
                     }
-                    else if (model.attributes[indexFields[0]].unique) {
+                    else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].unique) {
                         assert(index.unique === true, `${tableName}.[${indexFields}] must be defined unique key\n${JSON.stringify(index, null, 2)}`);
                     }
+                    else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].references) {
+                        assert(sequelize.options.dialect === 'mysql', `${tableName}.[${indexFields}] is auto created index by mysql.\n${JSON.stringify(index, null, 2)}`);
+                    }
                     else {
-                        assert(false, `${tableName}.[${indexFields}] is not defined index\n${JSON.stringify(index, null, 2)}`);
+                        assert(false, `${tableName}.[${indexFields}] is not defined index.${JSON.stringify(index, null, 2)}`);
                     }
                 }
             });
