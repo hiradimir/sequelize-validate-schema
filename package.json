@@ -1,6 +1,6 @@
 {
   "name": "sequelize-validation-schema",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "check defined sequelize models and db-schema",
   "private": false,
   "engines": {
