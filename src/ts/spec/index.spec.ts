@@ -14,7 +14,12 @@ describe("index", () => {
         let sequelize: any;
         let queryInterface: any;
         beforeEach(function () {
-          sequelize = new Sequelize(DATABASE_URL, {logging: false});
+          sequelize = new Sequelize(DATABASE_URL, {
+            logging: false,
+            pool: {
+              max: 3
+            }
+          });
           const TestTable = sequelize.define('TestTable', {
             id: {
               type: Sequelize.INTEGER,
@@ -179,7 +184,11 @@ describe("index", () => {
                 assert(false);
               })
               .catch(error => {
-                assert(_.includes(error.message, '[unknownForeignKey] must be defined foreign key'));
+                if(sequelize.options.dialect === 'mysql') {
+                  assert(_.includes(error.message, '[unknownForeignKey] is not defined index'));
+                } else {
+                  assert(_.includes(error.message, '[unknownForeignKey] must be defined foreign key'));
+                }
               });
 
           });
