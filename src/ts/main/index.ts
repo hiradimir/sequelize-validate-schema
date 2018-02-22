@@ -41,14 +41,14 @@ const dataTypeToDBTypeDialect: {
     // this support only postgres
     if (attr.type instanceof Sequelize.STRING) {
       return `CHARACTER VARYING(${attr.type._length})`;
+    } else if (attr.type instanceof Sequelize.BIGINT) {
+      return 'BIGINT';
     } else if (attr.type instanceof Sequelize.INTEGER) {
       return 'INTEGER';
     } else if (attr.type instanceof Sequelize.DATE) {
       return 'TIMESTAMP WITH TIME ZONE';
     } else if (attr.type instanceof <any>Sequelize.DATEONLY) {
       return 'DATE';
-    } else if (attr.type instanceof Sequelize.BIGINT) {
-      return 'BIGINT';
     } else {
       console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
     }
@@ -58,14 +58,14 @@ const dataTypeToDBTypeDialect: {
     // this support only postgres
     if (attr.type instanceof Sequelize.STRING) {
       return `VARCHAR(${attr.type._length})`;
+    } else if (attr.type instanceof Sequelize.BIGINT) {
+      return 'BIGINT(20)';
     } else if (attr.type instanceof Sequelize.INTEGER) {
       return 'INT(11)';
     } else if (attr.type instanceof Sequelize.DATE) {
       return 'DATETIME';
     } else if (attr.type instanceof <any>Sequelize.DATEONLY) {
       return 'DATE';
-    } else if (attr.type instanceof Sequelize.BIGINT) {
-      return 'BIGINT(20)';
     } else {
       console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
     }
