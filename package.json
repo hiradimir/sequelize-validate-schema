@@ -1,6 +1,6 @@
 {
-  "name": "sequelize-validation-schema",
-  "version": "0.0.6",
+  "name": "sequelize-validate-schema",
+  "version": "0.0.7",
   "description": "check defined sequelize models and db-schema",
   "private": false,
   "engines": {
@@ -53,31 +53,31 @@
     "instrument": true
   },
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "lodash": "^4.17.4",
-    "mysql2": "^1.4.2",
-    "sequelize": "^4.8.1"
+    "bluebird": "^3.5.1",
+    "lodash": "^4.17.5",
+    "mysql2": "^1.5.2",
+    "sequelize": "^4.33.4"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.10",
-    "@types/lodash": "^4.14.74",
-    "@types/mocha": "^2.2.43",
-    "@types/node": "^8.0.28",
-    "espower-typescript": "^8.1.1",
+    "@types/bluebird": "^3.5.20",
+    "@types/lodash": "^4.14.104",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^9.4.6",
+    "espower-typescript": "^8.1.3",
     "istanbul": "^0.4.5",
-    "mocha": "^3.5.3",
-    "mocha-multi": "^0.11.0",
-    "nyc": "^11.2.1",
-    "pg": "^6",
+    "mocha": "^5.0.1",
+    "mocha-multi": "^1.0.1",
+    "nyc": "^11.4.1",
+    "pg": "^7",
     "pg-hstore": "^2.3.2",
     "power-assert": "^1.4.4",
-    "remap-istanbul": "^0.9.5",
+    "remap-istanbul": "^0.10.1",
     "rimraf": "^2.6.2",
-    "sequelize-typescript": "^0.4.0",
-    "ts-node": "^3.3.0",
-    "typescript": "^2.5.2"
+    "sequelize-typescript": "^0.6.2",
+    "ts-node": "^5.0.0",
+    "typescript": "^2.7.2"
   },
   "optionalDependencies": {
-    "fsevents": "^1.1.2"
+    "fsevents": "^1.1.3"
   }
 }

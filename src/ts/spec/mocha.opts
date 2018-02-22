@@ -1,4 +1,5 @@
 -t 10s
+--exit
 --reporter mocha-multi
 --reporter-options progress=-,xunit=./dist/report/mocha-junit.xml
 --compilers ts:espower-typescript/guess src/ts/**/*.ts
