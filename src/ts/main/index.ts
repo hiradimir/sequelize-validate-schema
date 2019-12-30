@@ -18,7 +18,7 @@ interface IModelAttribute {
 }
 
 interface IRawModel {
-  attributes: { [index: string]: IModelAttribute }
+  rawAttributes: { [index: string]: IModelAttribute }
   primaryKeys: { [index: string]: IModelAttribute }
   options: any;
 }
