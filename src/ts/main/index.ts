@@ -39,15 +39,15 @@ const dataTypeToDBTypeDialect: {
   postgres: (attr: IModelAttribute) => {
 
     // this support only postgres
-    if (attr.type instanceof Sequelize.STRING) {
+    if (attr.type.constructor.name === "STRING") {
       return `CHARACTER VARYING(${attr.type._length})`;
-    } else if (attr.type instanceof Sequelize.BIGINT) {
+    } else if (attr.type.constructor.name === "BIGINT") {
       return 'BIGINT';
-    } else if (attr.type instanceof Sequelize.INTEGER) {
+    } else if (attr.type.constructor.name === "INTEGER") {
       return 'INTEGER';
-    } else if (attr.type instanceof Sequelize.DATE) {
+    } else if (attr.type.constructor.name === "DATE") {
       return 'TIMESTAMP WITH TIME ZONE';
-    } else if (attr.type instanceof <any>Sequelize.DATEONLY) {
+    } else if (attr.type.constructor.name === "DATEONLY") {
       return 'DATE';
     } else {
       console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
@@ -56,15 +56,15 @@ const dataTypeToDBTypeDialect: {
   mysql: (attr: IModelAttribute) => {
 
     // this support only postgres
-    if (attr.type instanceof Sequelize.STRING) {
+    if (attr.type.constructor.name === "STRING") {
       return `VARCHAR(${attr.type._length})`;
-    } else if (attr.type instanceof Sequelize.BIGINT) {
+    } else if (attr.type.constructor.name === "BIGINT") {
       return 'BIGINT(20)';
-    } else if (attr.type instanceof Sequelize.INTEGER) {
+    } else if (attr.type.constructor.name === "INTEGER") {
       return 'INT(11)';
-    } else if (attr.type instanceof Sequelize.DATE) {
+    } else if (attr.type.constructor.name === "DATE") {
       return 'DATETIME';
-    } else if (attr.type instanceof <any>Sequelize.DATEONLY) {
+    } else if (attr.type.constructor.name === "DATEONLY") {
       return 'DATE';
     } else {
       console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
@@ -174,12 +174,12 @@ export const validateSchemas = (sequelize: any, options?) => {
                 return sequelize.model(tableName);
               })
               .map(model => {
-                return checkAttributes(queryInterface, model.tableName, model, options)
+                return checkAttributes(queryInterface, model.options.tableName, model, options)
                   .then(() => {
-                    return checkForeignKey(queryInterface, model.tableName, model, options);
+                    return checkForeignKey(queryInterface, model.options.tableName, model, options);
                   })
                   .then(() => {
-                    return checkIndexes(queryInterface, model.tableName, model, options);
+                    return checkIndexes(queryInterface, model.options.tableName, model, options);
                   });
               })
           );

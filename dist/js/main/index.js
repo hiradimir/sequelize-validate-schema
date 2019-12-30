@@ -1,24 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Sequelize = require("sequelize");
 const assert = require("assert");
 const Promise = require("bluebird");
 const _ = require("lodash");
 const dataTypeToDBTypeDialect = {
     postgres: (attr) => {
-        if (attr.type instanceof Sequelize.STRING) {
+        if (attr.type.constructor.name === "STRING") {
             return `CHARACTER VARYING(${attr.type._length})`;
         }
-        else if (attr.type instanceof Sequelize.BIGINT) {
+        else if (attr.type.constructor.name === "BIGINT") {
             return 'BIGINT';
         }
-        else if (attr.type instanceof Sequelize.INTEGER) {
+        else if (attr.type.constructor.name === "INTEGER") {
             return 'INTEGER';
         }
-        else if (attr.type instanceof Sequelize.DATE) {
+        else if (attr.type.constructor.name === "DATE") {
             return 'TIMESTAMP WITH TIME ZONE';
         }
-        else if (attr.type instanceof Sequelize.DATEONLY) {
+        else if (attr.type.constructor.name === "DATEONLY") {
             return 'DATE';
         }
         else {
@@ -26,19 +25,19 @@ const dataTypeToDBTypeDialect = {
         }
     },
     mysql: (attr) => {
-        if (attr.type instanceof Sequelize.STRING) {
+        if (attr.type.constructor.name === "STRING") {
             return `VARCHAR(${attr.type._length})`;
         }
-        else if (attr.type instanceof Sequelize.BIGINT) {
+        else if (attr.type.constructor.name === "BIGINT") {
             return 'BIGINT(20)';
         }
-        else if (attr.type instanceof Sequelize.INTEGER) {
+        else if (attr.type.constructor.name === "INTEGER") {
             return 'INT(11)';
         }
-        else if (attr.type instanceof Sequelize.DATE) {
+        else if (attr.type.constructor.name === "DATE") {
             return 'DATETIME';
         }
-        else if (attr.type instanceof Sequelize.DATEONLY) {
+        else if (attr.type.constructor.name === "DATEONLY") {
             return 'DATE';
         }
         else {
@@ -128,12 +127,12 @@ exports.validateSchemas = (sequelize, options) => {
                 return sequelize.model(tableName);
             })
                 .map(model => {
-                return checkAttributes(queryInterface, model.tableName, model, options)
+                return checkAttributes(queryInterface, model.options.tableName, model, options)
                     .then(() => {
-                    return checkForeignKey(queryInterface, model.tableName, model, options);
+                    return checkForeignKey(queryInterface, model.options.tableName, model, options);
                 })
                     .then(() => {
-                    return checkIndexes(queryInterface, model.tableName, model, options);
+                    return checkIndexes(queryInterface, model.options.tableName, model, options);
                 });
             }));
         });

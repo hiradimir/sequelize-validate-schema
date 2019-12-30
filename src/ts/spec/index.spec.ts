@@ -1,7 +1,7 @@
 import * as Index from "../main/index";
 import * as assert from "assert";
 import * as _ from "lodash";
-import * as Sequelize from "sequelize";
+import {Sequelize, DataType} from 'sequelize-typescript';
 
 describe("index", () => {
 
@@ -22,26 +22,26 @@ describe("index", () => {
           });
           const TestTable = sequelize.define('TestTable', {
             id: {
-              type: Sequelize.INTEGER,
+              type: DataType.INTEGER,
               primaryKey: true,
               autoIncrement: true,
               allowNull: false
             },
-            testInteger: Sequelize.INTEGER,
-            testString: Sequelize.STRING,
-            testDateOnly: Sequelize.DATEONLY,
-            testDate: Sequelize.DATE,
-            testBigint: Sequelize.BIGINT,
-            // testForeignKey: Sequelize.INTEGER,
-            unknownForeignKey: Sequelize.INTEGER,
-            testIndexString: Sequelize.STRING,
-            testCombinedIndexString: Sequelize.STRING,
-            testUniqueIndexString: Sequelize.STRING,
+            testInteger: DataType.INTEGER,
+            testString: DataType.STRING,
+            testDateOnly: DataType.DATEONLY,
+            testDate: DataType.DATE,
+            testBigint: DataType.BIGINT,
+            // testForeignKey: DataType.INTEGER,
+            unknownForeignKey: DataType.INTEGER,
+            testIndexString: DataType.STRING,
+            testCombinedIndexString: DataType.STRING,
+            testUniqueIndexString: DataType.STRING,
             testUniqueString: {
               unique: true,
-              type: Sequelize.STRING,
+              type: DataType.STRING,
             },
-            testNonIndexString: Sequelize.STRING,
+            testNonIndexString: DataType.STRING,
           }, {
             tableName: 'TestTable',
             indexes: [
@@ -64,13 +64,13 @@ describe("index", () => {
 
           const ForeignTable = sequelize.define('ForeignTable', {
             id: {
-              type: Sequelize.INTEGER,
+              type: DataType.INTEGER,
               primaryKey: true,
               autoIncrement: true,
               allowNull: false
             },
             stringForeignKey: {
-              type: Sequelize.STRING,
+              type: DataType.STRING,
               unique: true
             },
           }, {
@@ -95,7 +95,7 @@ describe("index", () => {
               return queryInterface
                 .createTable('SequelizeMeta', {
                   meta: {
-                    type: Sequelize.STRING,
+                    type: DataType.STRING,
                     allowNull: false
                   }
                 });
@@ -111,7 +111,7 @@ describe("index", () => {
             return queryInterface
               .createTable('UnknownTable', {
                 meta: {
-                  type: Sequelize.STRING,
+                  type: DataType.STRING,
                   allowNull: false
                 }
               })
@@ -139,7 +139,7 @@ describe("index", () => {
 
           it('field modified by migration only', function () {
             return queryInterface
-              .changeColumn('TestTable', 'testString', {type: Sequelize.STRING(100)})
+              .changeColumn('TestTable', 'testString', {type: DataType.STRING(100)})
               .then(() => {
                 return Index.validateSchemas(sequelize);
               })
@@ -153,7 +153,7 @@ describe("index", () => {
 
           it('field created by migration only', function () {
             return queryInterface
-              .addColumn('TestTable', 'unknownField', {type: Sequelize.STRING})
+              .addColumn('TestTable', 'unknownField', {type: DataType.STRING})
               .then(() => {
                 return Index.validateSchemas(sequelize);
               })

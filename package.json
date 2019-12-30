@@ -1,6 +1,6 @@
 {
   "name": "sequelize-validate-schema",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "check defined sequelize models and db-schema",
   "private": false,
   "engines": {
@@ -53,16 +53,18 @@
     "instrument": true
   },
   "dependencies": {
-    "bluebird": "^3.5.1",
-    "lodash": "^4.17.5",
-    "mysql2": "^1.5.2",
-    "sequelize": "^4.33.4"
+    "bluebird": "^3.5.5",
+    "lodash": "^4.17.15",
+    "mysql2": "^1.6.5",
+    "sequelize": "^5.21.3"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.20",
     "@types/lodash": "^4.14.104",
     "@types/mocha": "^2.2.48",
     "@types/node": "^9.4.6",
+    "@types/sequelize": "^4.28.8",
+    "@types/validator": "^12.0.1",
     "espower-typescript": "^8.1.3",
     "istanbul": "^0.4.5",
     "mocha": "^5.0.1",
@@ -73,9 +75,9 @@
     "power-assert": "^1.4.4",
     "remap-istanbul": "^0.10.1",
     "rimraf": "^2.6.2",
-    "sequelize-typescript": "^0.6.2",
+    "sequelize-typescript": "^1.1.0",
     "ts-node": "^5.0.0",
-    "typescript": "^2.7.2"
+    "typescript": "^3.7.2"
   },
   "optionalDependencies": {
     "fsevents": "^1.1.3"
