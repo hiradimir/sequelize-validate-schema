@@ -25,23 +25,27 @@ const dataTypeToDBTypeDialect = {
         }
     },
     mysql: (attr) => {
-        if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
-            if (Number.isNaN(Number.parseInt(attr.type._length))) {
-                return attr.type._length.toUpperCase() + "TEXT";
-            }
+        if (attr.type.constructor.name === "STRING") {
             return `VARCHAR(${attr.type._length})`;
+        }
+        else if (attr.type.constructor.name.indexOf("TEXT") != -1) {
+            if (Number.isNaN(Number.parseInt(attr.type._length))) {
+                return (attr.type._length.toUpperCase() || "MEDIUM") + "TEXT";
+            }
+        }
+        else if (attr.type.constructor.name === "TINYINT" || attr.type.constructor.name === "BIGINT" || attr.type.constructor.name === "INTEGER") {
+            return `${attr.type.constructor.name === "INTEGER" ? "INT" : attr.type.constructor.name}(${attr.type._length || 10})`
+                + (attr.type._unsigned ? " UNSIGNED" : "");
         }
         else if (attr.type.constructor.name === "UUID") {
             return 'CHAR(36)';
         }
-        else if (attr.type.constructor.name === "BIGINT") {
-            return 'BIGINT(20)';
-        }
-        else if (attr.type.constructor.name === "INTEGER") {
-            return `INT(${attr.type._length || 10})` + (attr.type.options.unsigned ? " UNSIGNED" : "");
-        }
         else if (attr.type.constructor.name === "FLOAT") {
             return 'FLOAT';
+        }
+        else if (attr.type.constructor.name === "DECIMAL") {
+            return `DECIMAL(${attr.type._precision},${attr.type._scale})` + (attr.type._unsigned ? " UNSIGNED" : "");
+            ;
         }
         else if (attr.type.constructor.name === "BOOLEAN") {
             return 'TINYINT(1)';
@@ -71,7 +75,7 @@ exports.validateSchemas = (sequelize, options) => {
             return Promise.each(Object.keys(attributes), fieldName => {
                 const attribute = attributes[fieldName];
                 const modelAttr = model.rawAttributes[fieldName];
-                assert(!_.isUndefined(modelAttr), `${tableName}.${fieldName} is not defined.\n${modelAttr}.\n${JSON.stringify(model.rawAttributes, null, 2)}`);
+                assert(!_.isUndefined(modelAttr), `${tableName}.${fieldName} is not defined.\n${modelAttr}.\n${JSON.stringify(modelAttr, null, 2)}`);
                 const dataType = dataTypeToDBType(modelAttr);
                 assert(dataType === attribute.type, `${tableName}.${fieldName} field type is invalid.  Model.${fieldName}.type[${dataType}] != Table.${fieldName}.type[${attribute.type}]`);
                 assert(modelAttr.field === fieldName, `fieldName is not same. Model.field[${modelAttr.field}] != Table.primaryKey[${attribute.primaryKey}]`);
