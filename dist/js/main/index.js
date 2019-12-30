@@ -5,7 +5,7 @@ const Promise = require("bluebird");
 const _ = require("lodash");
 const dataTypeToDBTypeDialect = {
     postgres: (attr) => {
-        if (attr.type.constructor.name === "STRING") {
+        if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
             return `CHARACTER VARYING(${attr.type._length})`;
         }
         else if (attr.type.constructor.name === "BIGINT") {
@@ -25,7 +25,7 @@ const dataTypeToDBTypeDialect = {
         }
     },
     mysql: (attr) => {
-        if (attr.type.constructor.name === "STRING") {
+        if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
             return `VARCHAR(${attr.type._length})`;
         }
         else if (attr.type.constructor.name === "BIGINT") {

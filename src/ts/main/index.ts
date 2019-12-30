@@ -39,7 +39,7 @@ const dataTypeToDBTypeDialect: {
   postgres: (attr: IModelAttribute) => {
 
     // this support only postgres
-    if (attr.type.constructor.name === "STRING") {
+    if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
       return `CHARACTER VARYING(${attr.type._length})`;
     } else if (attr.type.constructor.name === "BIGINT") {
       return 'BIGINT';
@@ -56,7 +56,7 @@ const dataTypeToDBTypeDialect: {
   mysql: (attr: IModelAttribute) => {
 
     // this support only postgres
-    if (attr.type.constructor.name === "STRING") {
+    if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
       return `VARCHAR(${attr.type._length})`;
     } else if (attr.type.constructor.name === "BIGINT") {
       return 'BIGINT(20)';
