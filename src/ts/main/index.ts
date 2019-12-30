@@ -56,7 +56,7 @@ const dataTypeToDBTypeDialect: {
   mysql: (attr: IModelAttribute) => {
 
     // this support only postgres
-    if (attr.type.constructor.name === "STRING") {
+    if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
       if (Number.isNaN(Number.parseInt(attr.type._length))) {
         return attr.type._length.toUpperCase() + "TEXT";
       }
