@@ -21,7 +21,7 @@ const dataTypeToDBTypeDialect = {
             return 'DATE';
         }
         else {
-            console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
+            console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr.type)}`);
         }
     },
     mysql: (attr) => {
@@ -43,8 +43,11 @@ const dataTypeToDBTypeDialect = {
         else if (attr.type.constructor.name === "DATEONLY") {
             return 'DATE';
         }
+        else if (attr.type.constructor.name === "ENUM") {
+            return `ENUM('${attr.type.values.join("','")}')`;
+        }
         else {
-            console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr)}`);
+            console.error(`${attr.field} is not support schema type.\n${JSON.stringify(attr.type)}`);
         }
     }
 };
