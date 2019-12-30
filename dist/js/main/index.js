@@ -55,8 +55,8 @@ exports.validateSchemas = (sequelize, options) => {
             .then(attributes => {
             return Promise.each(Object.keys(attributes), fieldName => {
                 const attribute = attributes[fieldName];
-                const modelAttr = model.attributes[fieldName];
-                assert(!_.isUndefined(modelAttr), `${tableName}.${fieldName} is not defined.\n${modelAttr}.\n${JSON.stringify(model.attributes, null, 2)}`);
+                const modelAttr = model.rawAttributes[fieldName];
+                assert(!_.isUndefined(modelAttr), `${tableName}.${fieldName} is not defined.\n${modelAttr}.\n${JSON.stringify(model.rawAttributes, null, 2)}`);
                 const dataType = dataTypeToDBType(modelAttr);
                 assert(dataType === attribute.type, `${tableName}.${fieldName} field type is invalid.  Model.${fieldName}.type[${dataType}] != Table.${fieldName}.type[${attribute.type}]`);
                 assert(modelAttr.field === fieldName, `fieldName is not same. Model.field[${modelAttr.field}] != Table.primaryKey[${attribute.primaryKey}]`);
@@ -72,7 +72,7 @@ exports.validateSchemas = (sequelize, options) => {
                 if (sequelize.options.dialect === 'mysql') {
                     return;
                 }
-                const modelAttr = model.attributes[fk.from.split('\"').join('')];
+                const modelAttr = model.rawAttributes[fk.from.split('\"').join('')];
                 assert(!_.isUndefined(modelAttr.references), `${tableName}.[${modelAttr.field}] must be defined foreign key.\n${JSON.stringify(fk, null, 2)}`);
                 assert(fk.to === modelAttr.references.key, `${tableName}.${modelAttr.field} => ${modelAttr.references.key} must be same to foreignKey [${fk.to}].\n${JSON.stringify(fk, null, 2)}`);
             });
@@ -101,10 +101,10 @@ exports.validateSchemas = (sequelize, options) => {
                     if (modelIndex) {
                         assert(modelIndex.unique === true === index.unique === true, `${tableName}.[${indexFields}] must be same unique value\n${JSON.stringify(index, null, 2)}`);
                     }
-                    else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].unique) {
+                    else if (model.rawAttributes[indexFields[0]] && model.rawAttributes[indexFields[0]].unique) {
                         assert(index.unique === true, `${tableName}.[${indexFields}] must be defined unique key\n${JSON.stringify(index, null, 2)}`);
                     }
-                    else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].references) {
+                    else if (model.rawAttributes[indexFields[0]] && model.rawAttributes[indexFields[0]].references) {
                         assert(sequelize.options.dialect === 'mysql', `${tableName}.[${indexFields}] is auto created index by mysql.\n${JSON.stringify(index, null, 2)}`);
                     }
                     else {
