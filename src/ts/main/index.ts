@@ -65,6 +65,8 @@ const dataTypeToDBTypeDialect: {
       return 'BIGINT(20)';
     } else if (attr.type.constructor.name === "INTEGER") {
       return `INT(${attr.type._length || 10})` + (attr.type.options.unsigned ? " UNSIGNED" : "");
+    } else if (attr.type.constructor.name === "FLOAT") {
+      return 'FLOAT';
     } else if (attr.type.constructor.name === "DATE") {
       return 'DATETIME';
     } else if (attr.type.constructor.name === "DATEONLY") {
