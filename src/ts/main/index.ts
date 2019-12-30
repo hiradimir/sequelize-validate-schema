@@ -61,12 +61,16 @@ const dataTypeToDBTypeDialect: {
         return attr.type._length.toUpperCase() + "TEXT";
       }
       return `VARCHAR(${attr.type._length})`;
+    } else if (attr.type.constructor.name === "UUID") {
+      return 'CHAR(36)';
     } else if (attr.type.constructor.name === "BIGINT") {
       return 'BIGINT(20)';
     } else if (attr.type.constructor.name === "INTEGER") {
       return `INT(${attr.type._length || 10})` + (attr.type.options.unsigned ? " UNSIGNED" : "");
     } else if (attr.type.constructor.name === "FLOAT") {
       return 'FLOAT';
+    } else if (attr.type.constructor.name === "BOOLEAN") {
+      return 'TINYINT(1)';
     } else if (attr.type.constructor.name === "DATE") {
       return 'DATETIME';
     } else if (attr.type.constructor.name === "DATEONLY") {

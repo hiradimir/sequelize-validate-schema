@@ -31,6 +31,9 @@ const dataTypeToDBTypeDialect = {
             }
             return `VARCHAR(${attr.type._length})`;
         }
+        else if (attr.type.constructor.name === "UUID") {
+            return 'CHAR(36)';
+        }
         else if (attr.type.constructor.name === "BIGINT") {
             return 'BIGINT(20)';
         }
@@ -39,6 +42,9 @@ const dataTypeToDBTypeDialect = {
         }
         else if (attr.type.constructor.name === "FLOAT") {
             return 'FLOAT';
+        }
+        else if (attr.type.constructor.name === "BOOLEAN") {
+            return 'TINYINT(1)';
         }
         else if (attr.type.constructor.name === "DATE") {
             return 'DATETIME';
