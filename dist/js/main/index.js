@@ -26,6 +26,9 @@ const dataTypeToDBTypeDialect = {
     },
     mysql: (attr) => {
         if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
+            if (Number.isNaN(Number.parseInt(attr.type._length))) {
+                return attr.type._length.toUpperCase() + "TEXT";
+            }
             return `VARCHAR(${attr.type._length})`;
         }
         else if (attr.type.constructor.name === "BIGINT") {
