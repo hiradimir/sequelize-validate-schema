@@ -127,12 +127,12 @@ exports.validateSchemas = (sequelize, options) => {
                 return sequelize.model(tableName);
             })
                 .map(model => {
-                return checkAttributes(queryInterface, model.options.tableName, model, options)
+                return checkAttributes(queryInterface, model.tableName, model, options)
                     .then(() => {
-                    return checkForeignKey(queryInterface, model.options.tableName, model, options);
+                    return checkForeignKey(queryInterface, model.tableName, model, options);
                 })
                     .then(() => {
-                    return checkIndexes(queryInterface, model.options.tableName, model, options);
+                    return checkIndexes(queryInterface, model.tableName, model, options);
                 });
             }));
         });

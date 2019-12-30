@@ -84,7 +84,7 @@ const dataTypeToDBTypeDialect: {
 export const validateSchemas = (sequelize: any, options?) => {
 
   options = _.clone(options) || {};
-  options = _.defaults(options, {exclude: ['SequelizeMeta']}, sequelize.options);
+  options = _.defaults(options, { exclude: ['SequelizeMeta'] }, sequelize.options);
 
   const queryInterface = sequelize.getQueryInterface();
 
@@ -112,7 +112,7 @@ export const validateSchemas = (sequelize: any, options?) => {
     return sequelize.query(queryInterface.QueryGenerator.getForeignKeysQuery(tableName), options)
       .then((foreignKeys: Array<any>) => {
         return Promise.each(foreignKeys, (fk: any) => {
-          if(sequelize.options.dialect === 'mysql'){
+          if (sequelize.options.dialect === 'mysql') {
             // sequelize does not support to get foreignkey info at mysql
             return;
           }
@@ -148,7 +148,7 @@ export const validateSchemas = (sequelize: any, options?) => {
               assert(modelIndex.unique === true === index.unique === true, `${tableName}.[${indexFields}] must be same unique value\n${JSON.stringify(index, null, 2)}`);
             } else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].unique) {
               assert(index.unique === true, `${tableName}.[${indexFields}] must be defined unique key\n${JSON.stringify(index, null, 2)}`);
-            } else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].references ) {
+            } else if (model.attributes[indexFields[0]] && model.attributes[indexFields[0]].references) {
               // mysql create index with foreignKey
               assert(sequelize.options.dialect === 'mysql', `${tableName}.[${indexFields}] is auto created index by mysql.\n${JSON.stringify(index, null, 2)}`);
             } else {
@@ -174,12 +174,12 @@ export const validateSchemas = (sequelize: any, options?) => {
                 return sequelize.model(tableName);
               })
               .map(model => {
-                return checkAttributes(queryInterface, model.options.tableName, model, options)
+                return checkAttributes(queryInterface, model.tableName, model, options)
                   .then(() => {
-                    return checkForeignKey(queryInterface, model.options.tableName, model, options);
+                    return checkForeignKey(queryInterface, model.tableName, model, options);
                   })
                   .then(() => {
-                    return checkIndexes(queryInterface, model.options.tableName, model, options);
+                    return checkIndexes(queryInterface, model.tableName, model, options);
                   });
               })
           );
