@@ -5,7 +5,7 @@ const Promise = require("bluebird");
 const _ = require("lodash");
 const dataTypeToDBTypeDialect = {
     postgres: (attr) => {
-        if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
+        if (attr.type.constructor.name === "STRING") {
             return `CHARACTER VARYING(${attr.type._length})`;
         }
         else if (attr.type.constructor.name === "BIGINT") {
@@ -25,7 +25,7 @@ const dataTypeToDBTypeDialect = {
         }
     },
     mysql: (attr) => {
-        if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
+        if (attr.type.constructor.name === "STRING") {
             if (Number.isNaN(Number.parseInt(attr.type._length))) {
                 return attr.type._length.toUpperCase() + "TEXT";
             }
@@ -35,7 +35,7 @@ const dataTypeToDBTypeDialect = {
             return 'BIGINT(20)';
         }
         else if (attr.type.constructor.name === "INTEGER") {
-            return 'INT(11)';
+            return `INT(${attr.type._length || 10})` + (attr.type.options.unsigned ? " UNSIGNED" : "");
         }
         else if (attr.type.constructor.name === "DATE") {
             return 'DATETIME';

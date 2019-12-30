@@ -39,7 +39,7 @@ const dataTypeToDBTypeDialect: {
   postgres: (attr: IModelAttribute) => {
 
     // this support only postgres
-    if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
+    if (attr.type.constructor.name === "STRING") {
       return `CHARACTER VARYING(${attr.type._length})`;
     } else if (attr.type.constructor.name === "BIGINT") {
       return 'BIGINT';
@@ -56,7 +56,7 @@ const dataTypeToDBTypeDialect: {
   mysql: (attr: IModelAttribute) => {
 
     // this support only postgres
-    if (attr.type.constructor.name === "STRING" || attr.type.constructor.name.indexOf("TEXT") != -1) {
+    if (attr.type.constructor.name === "STRING") {
       if (Number.isNaN(Number.parseInt(attr.type._length))) {
         return attr.type._length.toUpperCase() + "TEXT";
       }
@@ -64,7 +64,7 @@ const dataTypeToDBTypeDialect: {
     } else if (attr.type.constructor.name === "BIGINT") {
       return 'BIGINT(20)';
     } else if (attr.type.constructor.name === "INTEGER") {
-      return 'INT(11)';
+      return `INT(${attr.type._length || 10})` + (attr.type.options.unsigned ? " UNSIGNED" : "");
     } else if (attr.type.constructor.name === "DATE") {
       return 'DATETIME';
     } else if (attr.type.constructor.name === "DATEONLY") {
