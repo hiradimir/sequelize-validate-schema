@@ -160,7 +160,12 @@ export const validateSchemas = (sequelize: any, options?) => {
             if (modelIndex) {
               assert(modelIndex.unique === true === index.unique === true, `${tableName}.[${indexFields}] must be same unique value\n${JSON.stringify(index, null, 2)}`);
             } else if (model.rawAttributes[indexFields[0]] && model.rawAttributes[indexFields[0]].unique) {
-              assert(index.unique === true, `${tableName}.[${indexFields}] must be defined unique key\n${JSON.stringify(index, null, 2)}`);
+              if (typeof model.rawAttributes[indexFields[0]].unique === "boolean") {
+                assert(index.unique === true, `${tableName}.[${indexFields}] must be defined unique key\n${JSON.stringify(index, null, 2)}`);
+              }
+              else { // for m:n non unique keys
+                assert(index.unique === false, `${tableName}.[${indexFields}] must be defined unique key combined\n${JSON.stringify(index, null, 2)}`);
+              }
             } else if (model.rawAttributes[indexFields[0]] && model.rawAttributes[indexFields[0]].references) {
               // mysql create index with foreignKey
               assert(sequelize.options.dialect === 'mysql', `${tableName}.[${indexFields}] is auto created index by mysql.\n${JSON.stringify(index, null, 2)}`);
