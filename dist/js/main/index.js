@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateSchemas = void 0;
 const assert = require("assert");
 const Promise = require("bluebird");
 const _ = require("lodash");
@@ -38,7 +39,7 @@ const dataTypeToDBTypeDialect = {
         }
         else if (attr.type.constructor.name === "TINYINT" || attr.type.constructor.name === "BIGINT" || attr.type.constructor.name === "INTEGER") {
             return `${attr.type.constructor.name === "INTEGER" ?
-                "INT" : attr.type.constructor.name}(${attr.type._length || (attr.type._unsigned ? 10 : 11)})`
+                "INT" : attr.type.constructor.name}${attr.type._length ? "(" + attr.type._length + ")" : ""})`
                 + (attr.type._unsigned ? " UNSIGNED" : "");
         }
         else if (attr.type.constructor.name === "UUID") {
